@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, inject, signal, OnInit, PLATFORM_ID, isDevMode } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 
@@ -25,6 +25,12 @@ export class App {
     attendance: null,
   });
 
+  LOCAL_URL = 'http://localhost:4000';
+  LIVE_URL = 'https://angular-attendance-backend.onrender.com';
+
+  get apiUrl() {
+    return isDevMode() ? this.LOCAL_URL : this.LIVE_URL;
+  }
   //create singals for list of array of students
   studentList = signal<STUDENTS[]>([]);
   private platformId = inject(PLATFORM_ID);
@@ -40,9 +46,7 @@ export class App {
   async SendFormData() {
     const data: STUDENTS = this.formData();
     try {
-      const response = await firstValueFrom(
-        this.http.post(`${process.env['URL']}/api/submit`, data)
-      );
+      const response = await firstValueFrom(this.http.post(`${this.apiUrl}/api/submit`, data));
       alert('Data Saved Successfully!');
       this.formData.set({ name: '', attendance: null });
       this.getFormData();
@@ -53,19 +57,17 @@ export class App {
   //for getting student data
   async getFormData() {
     try {
-      const data = await firstValueFrom(
-        this.http.get<STUDENTS[]>(`${process.env['URL']}/api/students`)
-      );
+      const data = await firstValueFrom(this.http.get<STUDENTS[]>(`${this.apiUrl}/api/students`));
       this.studentList.set(data);
     } catch (error) {
       console.log('Error: ', error);
     }
   }
-  async DeleteStudent(id: string) {
+  async DeleteStudent(id: string | undefined) {
     if (!id) return;
     if (!confirm('Are you sure you want to delete this student?')) return;
     try {
-      await firstValueFrom(this.http.delete(`${process.env['URL']}/api/delete/${id}`));
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/api/delete/${id}`));
       alert('Student Deleted!');
       this.getFormData();
     } catch (error) {
