@@ -37,7 +37,7 @@ export class App {
     const data: STUDENTS = this.formData();
     try {
       const response = await firstValueFrom(
-        this.http.post(`${environment.apiUrl}api/submit`, data)
+        this.http.post(`${process.env['URL']}api/submit`, data)
       );
       alert('Data Saved Successfully!');
       this.formData.set({ name: '', attendance: null });
@@ -50,7 +50,7 @@ export class App {
   async getFormData() {
     try {
       const data = await firstValueFrom(
-        this.http.get<STUDENTS[]>(`${environment.apiUrl}api/students`)
+        this.http.get<STUDENTS[]>(`${process.env['URL']}api/students`)
       );
       this.studentList.set(data);
     } catch (error) {
@@ -61,7 +61,7 @@ export class App {
     if (!id) return;
     if (!confirm('Are you sure you want to delete this student?')) return;
     try {
-      await firstValueFrom(this.http.delete(`${environment.apiUrl}api/delete/${id}`));
+      await firstValueFrom(this.http.delete(`${process.env['URL']}api/delete/${id}`));
       alert('Student Deleted!');
       this.getFormData();
     } catch (error) {
