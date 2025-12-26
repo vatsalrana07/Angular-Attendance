@@ -1,5 +1,6 @@
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, inject, signal, OnInit } from '@angular/core';
+import { Component, Inject, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 
@@ -26,9 +27,13 @@ export class App {
 
   //create singals for list of array of students
   studentList = signal<STUDENTS[]>([]);
+  private platformId = inject(PLATFORM_ID);
 
   ngOnInit() {
-    this.getFormData();
+    // 4. Wrap your call in this IF statement
+    if (isPlatformBrowser(this.platformId)) {
+      this.getFormData();
+    }
   }
 
   //for sending student data
