@@ -17,12 +17,18 @@
       <input type="text" placeholder="Attendance"
         class="h-13 rounded-xl w-full max-w-xs pl-4 text-zinc-950 bg-neutral-400/50 border-2 border-zinc-400 focus:outline-sky-500 focus:outline-1"
         [(ngModel)]="formData().attendance">
-
+      @if (isEditing()) {
+      <div class="flex gap-4">
+        <button (click)="updateData()" class="...">Update</button>
+        <button (click)="cancelEdit()" class="...">Cancel</button>
+      </div>
+      } @else{
       <button
         class="w-full max-w-xs py-2 bg-zinc-900 text-zinc-100 text-2xl rounded-2xl cursor-pointer hover:bg-zinc-800 transition"
         (click)="SendFormData()">
         Send
       </button>
+      }
     </div>
   </div>
 
