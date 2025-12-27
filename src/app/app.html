@@ -19,8 +19,10 @@
         [(ngModel)]="formData().attendance">
       @if (isEditing()) {
       <div class="flex gap-4">
-        <button (click)="updateData()" class="...">Update</button>
-        <button (click)="cancelEdit()" class="...">Cancel</button>
+        <button (click)="updateData()"
+          class="max-w-xs py-2 bg-zinc-900 text-zinc-100 text-2xl rounded-2xl cursor-pointer hover:bg-zinc-800 transition">Update</button>
+        <button (click)="cancelEdit()"
+          class="max-w-xs py-2 bg-zinc-900 text-zinc-100 text-2xl rounded-2xl cursor-pointer hover:bg-zinc-800 transition">Cancel</button>
       </div>
       } @else{
       <button
