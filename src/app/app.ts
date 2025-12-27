@@ -2,7 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, signal, OnInit, PLATFORM_ID, isDevMode } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, single } from 'rxjs';
 
 type STUDENTS = {
   name: string;
@@ -73,5 +73,37 @@ export class App {
     } catch (error) {
       console.error('Error deleting:', error);
     }
+  }
+
+  isEditing = signal(false);
+  currentEditID = signal<string | null>(null);
+
+  editStudent(student: STUDENTS) {
+    this.isEditing.set(true);
+    this.currentEditID.set(student._id ?? null);
+    this.formData.set({
+      name: student.name,
+      attendance: student.attendance,
+    });
+  }
+
+  async updateData() {
+    const id = this.currentEditID();
+    try {
+      const response = await firstValueFrom(
+        this.http.put<{ message: string }>(`${this.apiUrl}/api/update/${id}`, this.formData())
+      );
+      alert(`${response.message}`);
+      this.cancelEdit();
+      this.getFormData();
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  }
+
+  cancelEdit() {
+    this.isEditing.set(false);
+    this.currentEditID.set(null);
+    this.formData.set({ name: '', attendance: null });
   }
 }
